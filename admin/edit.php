@@ -7,7 +7,7 @@ checkLogin('admin');
 $id = $_GET['id'] ?? null;
 if (!$id) redirect('index.php');
 
-// Fetch categories for dropdown
+// Fetch categories
 $stmt = $pdo->query("SELECT * FROM category");
 $categories = $stmt->fetchAll();
 
@@ -33,66 +33,152 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Laporan - Admin</title>
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Laporan</title>
+<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body {
+    background-color: #eef3f7;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.navbar {
+    background-color: #3aa6b9 !important;
+}
+
+.navbar-brand span {
+    font-size: 18px;
+}
+
+.logo-navbar {
+    height: 45px;
+    width: auto;
+}
+
+.card {
+    border-radius: 18px;
+    border: none;
+}
+
+.card-body {
+    border-radius: 18px;
+}
+
+h1 {
+    font-size: 22px;
+    color: #0992C2;
+}
+
+.form-control,
+.form-select {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+textarea.form-control {
+    resize: none;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0992C2;
+    box-shadow: 0 0 0 0.2rem rgba(9,146,194,0.25);
+}
+
+.btn-primary {
+    background-color: #0d3b66;
+    border: none;
+    border-radius: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #0b2f52;
+}
+
+.btn-outline-secondary {
+    border-radius: 10px;
+}
+</style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <div class="container-fluid px-4">
-        <span class="navbar-brand fw-bold text-primary">ReportApp Admin</span>
-        <a href="index.php" class="btn btn-outline-secondary btn-sm">Kembali</a>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg shadow-sm">
+    <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center gap-2 " href="#">
+            <img src="../assets/img/logo.svg" alt="Logo" class="logo-navbar">
+        </a>
+
+        <!-- BUTTON -->
+        <a href="index.php" class="btn btn-light btn-sm fw-semibold">
+            Kembali
+        </a>
+
     </div>
 </nav>
 
-<div class="container my-5" style="max-width: 800px;">
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
-            <h1 class="fw-bold mb-4">Edit Data Laporan</h1>
+<!-- FORM -->
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 85vh;">
+    <div style="width: 100%; max-width: 650px;">
 
-            <form method="POST">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Kategori</label>
-                    <select name="category_id" class="form-select" required>
-                        <?php foreach ($categories as $cat): ?>
-                            <option value="<?= $cat['id'] ?>"
-                                <?= $report['category_id'] == $cat['id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($cat['name']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+        <div class="card shadow">
+            <div class="card-body p-4">
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Isi Laporan (Original)</label>
-                    <textarea name="report" rows="8" class="form-control" required><?= htmlspecialchars($report['report']) ?></textarea>
-                </div>
+                <h1 class="fw-bold mb-4">Edit Data Laporan</h1>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Status</label>
-                    <select name="status" class="form-select" required>
-                        <option value="menunggu" <?= $report['status'] === 'menunggu' ? 'selected' : '' ?>>Menunggu</option>
-                        <option value="proses" <?= $report['status'] === 'proses' ? 'selected' : '' ?>>Proses</option>
-                        <option value="selesai" <?= $report['status'] === 'selesai' ? 'selected' : '' ?>>Selesai</option>
-                    </select>
-                </div>
+                <form method="POST">
 
-                <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary flex-fill py-2 fw-semibold">
-                        Update Laporan
-                    </button>
-                    <a href="index.php" class="btn btn-outline-secondary flex-fill py-2 fw-semibold">
-                        Batal
-                    </a>
-                </div>
-            </form>
+                    <!-- KATEGORI -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Kategori</label>
+                        <select name="category_id" class="form-select" required>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?= $cat['id'] ?>"
+                                    <?= $report['category_id'] == $cat['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($cat['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
+                    <!-- ISI LAPORAN -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Isi Laporan</label>
+                        <textarea name="report" rows="6" class="form-control" required><?= htmlspecialchars($report['report']) ?></textarea>
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Status</label>
+                        <select name="status" class="form-select" required>
+                            <option value="menunggu" <?= $report['status'] === 'menunggu' ? 'selected' : '' ?>>Menunggu</option>
+                            <option value="proses" <?= $report['status'] === 'proses' ? 'selected' : '' ?>>Proses</option>
+                            <option value="selesai" <?= $report['status'] === 'selesai' ? 'selected' : '' ?>>Selesai</option>
+                        </select>
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="submit" class="btn btn-primary flex-fill py-2 fw-semibold">
+                            Update Laporan
+                        </button>
+                        <a href="index.php" class="btn btn-outline-secondary flex-fill py-2 fw-semibold">
+                            Batal
+                        </a>
+                    </div>
+
+                </form>
+
+            </div>
         </div>
+
     </div>
 </div>
 
